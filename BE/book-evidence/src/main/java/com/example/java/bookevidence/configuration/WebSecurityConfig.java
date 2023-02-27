@@ -8,9 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 /**
  * Web Security Configuration.
+ * 
+ * Note: Access of H2 console: 
+ *  https://stackoverflow.com/questions/74680244/h2-database-console-not-opening-with-spring-security
+ *  https://github.com/spring-projects/spring-security/issues/12546
  *
  * @author Libor Grigerek
  *
@@ -23,12 +28,21 @@ public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable() //other request than GET don't work without CSRF disabled
-                .authorizeHttpRequests()
-                // permit access to information about application
-                .requestMatchers(CommonUtil.APP_URL + "**").permitAll()
-                // other requests
-                .anyRequest().authenticated();
+        http
+                .authorizeHttpRequests( auth -> {
+                        // permit access to information about application
+                        auth.requestMatchers(CommonUtil.APP_URL + "**").permitAll();
+                        // grant access to H2 console
+                        auth.requestMatchers(toH2Console()).permitAll();
+                    }
+                )
+                .headers( headers ->
+                    headers.frameOptions().disable()
+                )
+                .csrf( csrf ->
+                    // grant access to H2 console
+                    csrf.ignoringRequestMatchers(toH2Console())
+                )
         ;
         return http.build();
     }
