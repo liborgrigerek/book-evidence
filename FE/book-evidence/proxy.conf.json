@@ -1,0 +1,7 @@
+{
+    "/": {
+      "target": "http://localhost:8080/book-evidence",
+      "secure": false
+    }
+  }
+  
