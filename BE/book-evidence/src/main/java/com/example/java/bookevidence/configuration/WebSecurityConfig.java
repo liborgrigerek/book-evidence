@@ -30,6 +30,9 @@ public class WebSecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests( auth -> {
+                        // TODO: @@@@ remove this after login is solved @@@@
+                        auth.requestMatchers(CommonUtil.AUTHOR_URL + "**").permitAll();
+                        
                         // permit access to information about application
                         auth.requestMatchers(CommonUtil.APP_URL + "**").permitAll();
                         // grant access to H2 console
