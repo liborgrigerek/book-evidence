@@ -4,7 +4,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Subject } from 'rxjs/internal/Subject';
 import { AuthorService } from '../service/author.service';
-import { AuthorDataSource, Author } from './author-datasource';
+import { EntityDataSource } from '../model/entity-datasource';
+import { Author } from '../model/author';
 
 @Component({
   selector: 'app-author',
@@ -15,7 +16,7 @@ export class AuthorComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<Author>;
-  dataSource: AuthorDataSource;
+  dataSource: EntityDataSource<Author>;
   searchText: string = '';
   searchSubject$ = new Subject<string>();
 
@@ -23,7 +24,7 @@ export class AuthorComponent implements OnInit, AfterViewInit {
   displayedColumns = ['id', 'firstname', 'lastname'];
 
   constructor(private authorService: AuthorService) {
-    this.dataSource = new AuthorDataSource([], this.searchSubject$);
+    this.dataSource = new EntityDataSource([], this.searchSubject$);
   }
 
   ngOnInit(): void {
@@ -32,7 +33,7 @@ export class AuthorComponent implements OnInit, AfterViewInit {
     this.authorService.getAllAuthors().subscribe({
       next: data => {
         // redefine the datasource
-        this.dataSource = new AuthorDataSource(data, this.searchSubject$);
+        this.dataSource = new EntityDataSource(data, this.searchSubject$);
         this.refreshTable();
       }
     });
