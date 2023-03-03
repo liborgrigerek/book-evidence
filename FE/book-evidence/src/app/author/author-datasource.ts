@@ -1,51 +1,43 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
-
-// TODO: Replace this with your own data model type
-export interface AuthorItem {
-  name: string;
-  id: number;
-}
-
-// TODO: replace this with real data from your application
-const EXAMPLE_DATA: AuthorItem[] = [
-  {id: 1, name: 'Hydrogen'},
-  {id: 2, name: 'Helium'},
-  {id: 3, name: 'Lithium'},
-  {id: 4, name: 'Beryllium'},
-  {id: 5, name: 'Boron'},
-  {id: 6, name: 'Carbon'},
-  {id: 7, name: 'Nitrogen'},
-  {id: 8, name: 'Oxygen'},
-  {id: 9, name: 'Fluorine'},
-  {id: 10, name: 'Neon'},
-  {id: 11, name: 'Sodium'},
-  {id: 12, name: 'Magnesium'},
-  {id: 13, name: 'Aluminum'},
-  {id: 14, name: 'Silicon'},
-  {id: 15, name: 'Phosphorus'},
-  {id: 16, name: 'Sulfur'},
-  {id: 17, name: 'Chlorine'},
-  {id: 18, name: 'Argon'},
-  {id: 19, name: 'Potassium'},
-  {id: 20, name: 'Calcium'},
-];
+import { debounceTime, map } from 'rxjs/operators';
+import { Observable, of as observableOf, merge, Subject } from 'rxjs';
 
 /**
- * Data source for the Author view. This class should
- * encapsulate all logic for fetching and manipulating the displayed data
+ * Author model.
+ */
+export interface Author {
+  id: number;
+  firstname: string;
+  lastname: string;
+}
+
+/**
+ * Data source for the Author view. 
+ * This class encapsulates all logic for fetching and manipulating the displayed data
  * (including sorting, pagination, and filtering).
  */
-export class AuthorDataSource extends DataSource<AuthorItem> {
-  data: AuthorItem[] = EXAMPLE_DATA;
+export class AuthorDataSource extends DataSource<Author> {
+  data: Author[] = [];
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
+  filter: Observable<string>;
+  keyword: string = '';
+  keywordChanged = new Subject<boolean>();
 
-  constructor() {
+  constructor(data: Author[], filter: Observable<string>) {
     super();
+    this.data = data;
+    this.filter = filter;
+    this.filter.pipe(
+      debounceTime(400) // delay search a bit
+    ).subscribe({
+      next: (keyword) => {
+        this.keyword = keyword;
+        this.keywordChanged.next(true);
+      }
+    })
   }
 
   /**
@@ -53,16 +45,16 @@ export class AuthorDataSource extends DataSource<AuthorItem> {
    * the returned stream emits new items.
    * @returns A stream of the items to be rendered.
    */
-  connect(): Observable<AuthorItem[]> {
-    if (this.paginator && this.sort) {
+  connect(): Observable<Author[]> {
+    if (this.paginator && this.sort && this.filter) {
       // Combine everything that affects the rendered data into one update
       // stream for the data-table to consume.
-      return merge(observableOf(this.data), this.paginator.page, this.sort.sortChange)
+      return merge(observableOf(this.data), this.keywordChanged, this.paginator.page, this.sort.sortChange)
         .pipe(map(() => {
-          return this.getPagedData(this.getSortedData([...this.data ]));
+          return this.getPagedData(this.getSortedData(this.getFilteredData([...this.data ], this.keyword)));
         }));
     } else {
-      throw Error('Please set the paginator and sort on the data source before connecting.');
+      throw Error('Please set the paginator, sort and filter on the data source before connecting.');
     }
   }
 
@@ -76,7 +68,7 @@ export class AuthorDataSource extends DataSource<AuthorItem> {
    * Paginate the data (client-side). If you're using server-side pagination,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getPagedData(data: AuthorItem[]): AuthorItem[] {
+  private getPagedData(data: Author[]): Author[] {
     if (this.paginator) {
       const startIndex = this.paginator.pageIndex * this.paginator.pageSize;
       return data.splice(startIndex, this.paginator.pageSize);
@@ -89,19 +81,23 @@ export class AuthorDataSource extends DataSource<AuthorItem> {
    * Sort the data (client-side). If you're using server-side sorting,
    * this would be replaced by requesting the appropriate data from the server.
    */
-  private getSortedData(data: AuthorItem[]): AuthorItem[] {
+  private getSortedData(data: Author[]): Author[] {
     if (!this.sort || !this.sort.active || this.sort.direction === '') {
       return data;
     }
-
     return data.sort((a, b) => {
       const isAsc = this.sort?.direction === 'asc';
       switch (this.sort?.active) {
-        case 'name': return compare(a.name, b.name, isAsc);
+        case 'lastname': return compare(a.lastname, b.lastname, isAsc);
+        case 'firstname': return compare(a.firstname, b.firstname, isAsc);
         case 'id': return compare(+a.id, +b.id, isAsc);
         default: return 0;
       }
     });
+  }
+
+  private getFilteredData(data: Author[], keyword: string): Author[] {
+    return data.filter(author => (author.firstname+author.lastname).toLowerCase().includes(keyword.toLowerCase()));
   }
 }
 
