@@ -25,6 +25,7 @@ public class RentedBook {
     public static class Key {
         private Integer bookId;
         private Integer readerId;
+        protected Key() {}
         public Key(Integer bookId, Integer readerId) {
             this.bookId = bookId;
             this.readerId = readerId;
@@ -32,6 +33,35 @@ public class RentedBook {
         @Override
         public String toString() {
             return "Key [bookId=" + bookId + ", readerId=" + readerId + "]";
+        }
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((bookId == null) ? 0 : bookId.hashCode());
+            result = prime * result + ((readerId == null) ? 0 : readerId.hashCode());
+            return result;
+        }
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            Key other = (Key) obj;
+            if (bookId == null) {
+                if (other.bookId != null)
+                    return false;
+            } else if (!bookId.equals(other.bookId))
+                return false;
+            if (readerId == null) {
+                if (other.readerId != null)
+                    return false;
+            } else if (!readerId.equals(other.readerId))
+                return false;
+            return true;
         }
         public Integer getBookId() {
             return bookId;
