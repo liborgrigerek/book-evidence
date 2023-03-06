@@ -8,9 +8,20 @@ import { EntityDataSource } from '../../model/entity-datasource';
 import { Author } from '../../model/author';
 import { EditAuthorComponent } from '../edit-author/edit-author.component';
 import { MatDialog } from '@angular/material/dialog';
+import { DeleteAuthorComponent } from '../delete-author/delete-author.component';
 
-export interface AuthorDialogData {
+/**
+ * Dialog data for EditAuthor component.
+ */
+export interface EditAuthorDialogData {
   author : Author;
+}
+
+/**
+ * Dialog data for DeleteAuthor component.
+ */
+export interface DeleteAuthorDialogData {
+  author: Author;
 }
 
 @Component({
@@ -27,7 +38,7 @@ export class AuthorComponent implements OnInit, AfterViewInit {
   searchSubject$ = new Subject<string>();
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['id', 'firstname', 'lastname'];
+  displayedColumns = ['id', 'firstname', 'lastname', 'action'];
 
   /**
    * Constructor.
@@ -96,6 +107,56 @@ export class AuthorComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Edits given author.
+   * @param author author to be edited.
+   */
+  editAuthor(author: Author): void {
+    const dialogRef = this.dialog.open(EditAuthorComponent, {
+      data: {author: author}
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (author) => {
+        if (author) {
+          // update author
+         this.authorService.saveAuthor(author).subscribe({
+            next: (savedAuthor) => {
+              console.log('savedAuthor=', savedAuthor);
+            },
+            complete: () => this.refreshTable()
+          })
+        }
+      }
+    });
+  }
+
+  /**
+   * Deletes given author.
+   * @param author author to be deleted.
+   */
+  deleteAuthor(author: Author): void {
+    const dialogRef = this.dialog.open(DeleteAuthorComponent, {
+      data: {author: author}
+    });
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result && author.id) {
+          // delete author
+         this.authorService.deleteAuthor(author.id).subscribe({
+            next: (result) => {
+              console.log('deletedAuthor=', result);
+              if (result) {
+                const data = this.dataSource.data.filter((a) => a.id !== author.id);
+                this.dataSource.data = data;
+              }
+            },
+            complete: () => this.refreshTable()
+          })
+        }
+      }
+    });
+  }
+
   // private methods
 
   /**
@@ -105,5 +166,6 @@ export class AuthorComponent implements OnInit, AfterViewInit {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     this.table.dataSource = this.dataSource;  
+    this.dataSource.contentChanged.next(true);
   }
 }

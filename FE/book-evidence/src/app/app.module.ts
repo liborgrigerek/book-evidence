@@ -21,12 +21,14 @@ import { MatCardModule } from '@angular/material/card';
 import { FormsModule } from '@angular/forms';
 import { AuthorComponent } from './form/author/author.component';
 import { EditAuthorComponent } from './form/edit-author/edit-author.component';
+import { DeleteAuthorComponent } from './form/delete-author/delete-author.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthorComponent,
-    EditAuthorComponent
+    EditAuthorComponent,
+    DeleteAuthorComponent
   ],
   imports: [
     BrowserModule,

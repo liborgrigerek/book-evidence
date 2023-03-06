@@ -16,7 +16,7 @@ export class EntityDataSource<T extends Entity> extends DataSource<T> {
   sort: MatSort | undefined;
   filter: Observable<string>;
   keyword: string = '';
-  keywordChanged = new Subject<boolean>();
+  contentChanged = new Subject<boolean>();
 
   /**
    * Constructor.
@@ -32,7 +32,7 @@ export class EntityDataSource<T extends Entity> extends DataSource<T> {
     ).subscribe({
       next: (keyword) => {
         this.keyword = keyword;
-        this.keywordChanged.next(true);
+        this.contentChanged.next(true);
       }
     })
   }
@@ -46,7 +46,7 @@ export class EntityDataSource<T extends Entity> extends DataSource<T> {
     if (this.paginator && this.sort && this.filter) {
       // Combine everything that affects the rendered data into one update
       // stream for the data-table to consume.
-      return merge(observableOf(this.data), this.keywordChanged, this.paginator.page, this.sort.sortChange)
+      return merge(observableOf(this.data), this.contentChanged, this.paginator.page, this.sort.sortChange)
         .pipe(map(() => {
           return this.getPagedData(this.getSortedData(this.getFilteredData([...this.data ], this.keyword)));
         }));

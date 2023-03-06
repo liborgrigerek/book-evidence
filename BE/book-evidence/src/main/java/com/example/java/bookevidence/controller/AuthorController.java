@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -87,9 +88,28 @@ public class AuthorController {
         log.debug("saveAuthor() started. Author={}", author);
         try {
             Author savedAuthor = authorService.saveAuthor(author);
+            log.debug("saveAuthor() finished. savedAuthor={}", savedAuthor);
             return ResponseEntity.ok(savedAuthor);
        } catch (Exception ex) {
            log.error("saveAuthor() error: {}", ex.getMessage());
+           throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, CommonUtil.getStackTraceFromException(ex));
+       }
+    }
+
+    /**
+     * Deletes given author from the database.
+     * @param author author.
+     * @return true if successfully deleted.
+     */
+    @DeleteMapping(value="delete")
+    public ResponseEntity<Boolean> deleteAuthor(@RequestParam("id") Integer authorId) {
+        log.debug("deleteAuthor() started. authorId={}", authorId);
+        try {
+            authorService.deleteAuthorById(authorId);
+            log.debug("deleteAuthor() finished successfully.");
+            return ResponseEntity.ok(true);
+       } catch (Exception ex) {
+           log.error("deleteAuthor() error: {}", ex.getMessage());
            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, CommonUtil.getStackTraceFromException(ex));
        }
     }

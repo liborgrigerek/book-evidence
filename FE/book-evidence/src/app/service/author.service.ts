@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Author } from '../model/author';
@@ -34,6 +34,21 @@ export class AuthorService {
     return this.http.post<Author>('author/save', author).pipe(
       map(
         (author) => new Author(author.id, author.firstname, author.lastname)
+      )
+    )
+  }
+
+  /**
+   * Deletes given author.
+   * @param authorId id of author to be deleted.
+   */
+  deleteAuthor(authorId:number): Observable<boolean> {
+    const options = {
+      params: new HttpParams().set('id', authorId)
+    }
+    return this.http.delete<Author>('author/delete', options).pipe(
+      map(
+        () => true
       )
     )
   }
