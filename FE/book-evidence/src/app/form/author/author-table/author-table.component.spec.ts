@@ -4,7 +4,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 
-import { AuthorComponent } from './author.component';
+import { AuthorComponent } from './author-table.component';
 
 describe('AuthorComponent', () => {
   let component: AuthorComponent;

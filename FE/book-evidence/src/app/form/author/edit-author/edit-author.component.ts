@@ -1,6 +1,12 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { EditAuthorDialogData } from '../author/author.component';
+import { EditAuthorDialogData } from '../author-dialog-data';
+
+/**
+ * Dialog to add a new author or edit existing author.
+ * 
+ * @author Libor Grigerek
+ */
 
 @Component({
   selector: 'app-edit-author',

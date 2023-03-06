@@ -3,31 +3,17 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Subject } from 'rxjs/internal/Subject';
-import { AuthorService } from '../../service/author.service';
-import { EntityDataSource } from '../../model/entity-datasource';
-import { Author } from '../../model/author';
+import { AuthorService } from '../../../service/author.service';
+import { EntityDataSource } from '../../../model/entity-datasource';
+import { Author } from '../../../model/author';
 import { EditAuthorComponent } from '../edit-author/edit-author.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteAuthorComponent } from '../delete-author/delete-author.component';
 
-/**
- * Dialog data for EditAuthor component.
- */
-export interface EditAuthorDialogData {
-  author : Author;
-}
-
-/**
- * Dialog data for DeleteAuthor component.
- */
-export interface DeleteAuthorDialogData {
-  author: Author;
-}
-
 @Component({
-  selector: 'app-author',
-  templateUrl: './author.component.html',
-  styleUrls: ['./author.component.scss']
+  selector: 'app-author-table',
+  templateUrl: './author-table.component.html',
+  styleUrls: ['./author-table.component.scss']
 })
 export class AuthorComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
