@@ -14,7 +14,15 @@ export class Util {
      * @param isAsc true if ascending sort.
      * @returns -1,0,1 for less, equal, greater
      */
-    static compare(a: string | number, b: string | number, isAsc: boolean): number {
-      return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+    static compare(a: string | number | undefined, b: string | number | undefined, isAsc: boolean): number {
+      if (a && b) {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
+      } else if (a) { 
+        return 1;
+      } else if (b) {
+        return -1;
+      } else {
+        return 0
+      }
     }
 }

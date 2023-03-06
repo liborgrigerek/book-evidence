@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,7 +32,8 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests( auth -> {
                         // TODO: @@@@ remove this after login is solved @@@@
-                        auth.requestMatchers(CommonUtil.AUTHOR_URL + "**").permitAll();
+                        auth.requestMatchers("/**").permitAll();
+                        auth.requestMatchers(HttpMethod.POST, "/**").permitAll();
                         
                         // permit access to information about application
                         auth.requestMatchers(CommonUtil.APP_URL + "**").permitAll();
@@ -42,9 +44,11 @@ public class WebSecurityConfig {
                 .headers( headers ->
                     headers.frameOptions().disable()
                 )
-                .csrf( csrf ->
-                    // grant access to H2 console
-                    csrf.ignoringRequestMatchers(toH2Console())
+                .csrf( csrf -> {
+                        // grant access to H2 console
+                        // csrf.ignoringRequestMatchers(toH2Console()); // needed in case if csrf is enabled
+                        csrf.disable();
+                    }
                 )
         ;
         return http.build();

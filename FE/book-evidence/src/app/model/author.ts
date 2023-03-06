@@ -7,17 +7,17 @@ import { Util } from "./util";
  * @author Libor Grigerek
  */
 export class Author implements Entity {
-    id: number;
+    id: number | undefined;
     firstname: string;
     lastname: string;
 
     /**
-     * Constructor.
+     * Full Constructor.
      * @param id        author's id.
      * @param firstname author's firstname.
      * @param lastname  author's lastname.
      */
-    constructor(id: number, firstname: string, lastname: string) {
+    constructor(id: number | undefined, firstname: string, lastname: string) {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
@@ -34,7 +34,7 @@ export class Author implements Entity {
         switch (colName) {
             case 'lastname': return Util.compare(this.lastname, other.lastname, isAsc);
             case 'firstname': return Util.compare(this.firstname, other.firstname, isAsc);
-            case 'id': return Util.compare(+this.id, +other.id, isAsc);
+            case 'id': return Util.compare(this.id, other.id, isAsc);
             default: return 0;        
         }
     }

@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.java.bookevidence.model.Author;
 import com.example.java.bookevidence.service.AuthorService;
 import com.example.java.bookevidence.util.CommonUtil;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 /**
  * Author Controller.
@@ -73,6 +76,24 @@ public class AuthorController {
            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, CommonUtil.getStackTraceFromException(ex));
        }
     }
+
+    /**
+     * Saves given author to the database.
+     * @param author author.
+     * @return saved entity.
+     */
+    @PostMapping(value="save")
+    public ResponseEntity<Author> saveAuthor(@RequestBody Author author) {
+        log.debug("saveAuthor() started. Author={}", author);
+        try {
+            Author savedAuthor = authorService.saveAuthor(author);
+            return ResponseEntity.ok(savedAuthor);
+       } catch (Exception ex) {
+           log.error("saveAuthor() error: {}", ex.getMessage());
+           throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, CommonUtil.getStackTraceFromException(ex));
+       }
+    }
+    
     
 
 }

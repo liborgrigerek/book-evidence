@@ -14,4 +14,5 @@ import com.example.java.bookevidence.model.Author;
 public interface AuthorService {
     List<Author> getAllAuthors();
     Author getAuthorById(Integer id);
+    Author saveAuthor(Author author);
 }

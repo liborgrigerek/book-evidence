@@ -2,6 +2,9 @@
 
   <form class="main-form">
     <h2>List of Authors:</h2>
+    <div class="button-row">
+      <button mat-raised-button (click)="addNewAuthor()" >Add a new Author</button>
+    </div>
     <mat-form-field class="half-width">
       <mat-label>Search for author...</mat-label>
       <input matInput placeholder="Please enter a part of author's name" [(ngModel)]="searchText" name="searchInput" (ngModelChange)="onSearchInputChange($event)">

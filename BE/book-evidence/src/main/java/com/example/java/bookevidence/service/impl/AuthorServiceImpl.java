@@ -52,4 +52,13 @@ public class AuthorServiceImpl implements AuthorService {
         return authorRepository.findById(id).orElse(null);
     }
 
+    /**
+     * Saves given author.
+     * @return
+     */
+    @Override
+    public Author saveAuthor(Author author) {
+        return authorRepository.save(author);
+    }
+
 }

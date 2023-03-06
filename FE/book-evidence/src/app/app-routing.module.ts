@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorComponent } from './author/author.component';
+import { AuthorComponent } from './form/author/author.component';
 
 const routes: Routes = [
   {path: 'author', component: AuthorComponent}

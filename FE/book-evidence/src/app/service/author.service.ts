@@ -24,4 +24,17 @@ export class AuthorService {
       })
     );
   }
+
+  /**
+   * Saves given author.
+   * @param author author to be saved.
+   * @returns updated entity.
+   */
+  saveAuthor(author:Author): Observable<Author> {
+    return this.http.post<Author>('author/save', author).pipe(
+      map(
+        (author) => new Author(author.id, author.firstname, author.lastname)
+      )
+    )
+  }
 }
