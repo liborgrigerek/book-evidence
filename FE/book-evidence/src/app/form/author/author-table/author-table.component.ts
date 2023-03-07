@@ -9,6 +9,8 @@ import { Author } from '../../../model/author';
 import { EditAuthorComponent } from '../edit-author/edit-author.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteAuthorComponent } from '../delete-author/delete-author.component';
+import { MessageService } from 'src/app/service/message.service';
+import { MessageButtonGroup, MessageType } from 'src/app/model/message';
 
 @Component({
   selector: 'app-author-table',
@@ -33,7 +35,8 @@ export class AuthorComponent implements OnInit, AfterViewInit {
    */
   constructor(
     public dialog: MatDialog,
-    private authorService: AuthorService
+    private authorService: AuthorService,
+    private messageService: MessageService
   ) {
     // init empty datasource
     this.dataSource = new EntityDataSource([], this.searchSubject$);
@@ -83,8 +86,17 @@ export class AuthorComponent implements OnInit, AfterViewInit {
           // add a new author
          this.authorService.saveAuthor(author).subscribe({
             next: (savedAuthor) => {
-              console.log('savedAuthor=', savedAuthor);
+              console.info('savedAuthor=', savedAuthor);
               this.dataSource.data.push(savedAuthor);
+              // show confirmation message
+              this.messageService.addMessage({
+                type: MessageType.INFO,
+                text: 'Author has been saved.',
+                buttonGroup: MessageButtonGroup.OK,
+                afterClose: (clickedButton) => {
+                  // do nothing
+                }
+              });
             },
             complete: () => this.refreshTable()
           })
@@ -107,7 +119,16 @@ export class AuthorComponent implements OnInit, AfterViewInit {
           // update author
          this.authorService.saveAuthor(author).subscribe({
             next: (savedAuthor) => {
-              console.log('savedAuthor=', savedAuthor);
+              console.info('savedAuthor=', savedAuthor);
+              // show confirmation message
+              this.messageService.addMessage({
+                type: MessageType.INFO,
+                text: 'Author has been saved.',
+                buttonGroup: MessageButtonGroup.OK,
+                afterClose: (clickedButton) => {
+                  // do nothing
+                }
+              });
             },
             complete: () => this.refreshTable()
           })
@@ -134,6 +155,15 @@ export class AuthorComponent implements OnInit, AfterViewInit {
               if (result) {
                 const data = this.dataSource.data.filter((a) => a.id !== author.id);
                 this.dataSource.data = data;
+                // show confirmation message
+                this.messageService.addMessage({
+                  type: MessageType.INFO,
+                  text: 'Author has been deleted.',
+                  buttonGroup: MessageButtonGroup.OK,
+                  afterClose: (clickedButton) => {
+                    // do nothing
+                  }
+                });
               }
             },
             complete: () => this.refreshTable()

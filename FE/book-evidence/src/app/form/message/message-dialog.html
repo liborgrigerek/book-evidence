@@ -1,0 +1,17 @@
+<h1 mat-dialog-title>{{getTitle()}}</h1>
+<div mat-dialog-content>
+  <p>{{data.message.text}}</p>
+</div>
+<div mat-dialog-actions>
+    <div *ngIf="okMessageGroup()">
+        <button mat-button [mat-dialog-close]="ok()" cdkFocusInitial>Ok</button>
+    </div>
+    <div *ngIf="cancelOkMessageGroup()">
+        <button mat-button [mat-dialog-close]="cancel()" cdkFocusInitial>Cancel</button>
+        <button mat-button [mat-dialog-close]="ok()" cdkFocusInitial>Ok</button>
+    </div>
+    <div *ngIf="yesNoMessageGroup()">
+        <button mat-button [mat-dialog-close]="no()" cdkFocusInitial>NO</button>
+        <button mat-button [mat-dialog-close]="yes()" cdkFocusInitial>YES</button>
+    </div>
+</div>

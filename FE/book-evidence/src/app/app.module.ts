@@ -22,13 +22,16 @@ import { FormsModule } from '@angular/forms';
 import { AuthorComponent } from './form/author/author-table/author-table.component';
 import { EditAuthorComponent } from './form/author/edit-author/edit-author.component';
 import { DeleteAuthorComponent } from './form/author/delete-author/delete-author.component';
+import { MessageComponent, MessageDialog } from './form/message/message.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthorComponent,
     EditAuthorComponent,
-    DeleteAuthorComponent
+    DeleteAuthorComponent,
+    MessageComponent,
+    MessageDialog
   ],
   imports: [
     BrowserModule,
