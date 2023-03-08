@@ -10,6 +10,7 @@ export class Author implements Entity {
     id: number | undefined;
     firstname: string;
     lastname: string;
+    fullname: string;
 
     /**
      * Full Constructor.
@@ -21,6 +22,7 @@ export class Author implements Entity {
         this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.fullname = this.firstname + ' ' + this.lastname;
     }
     
     /**

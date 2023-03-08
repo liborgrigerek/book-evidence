@@ -18,20 +18,27 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
+import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
-import { AuthorComponent } from './form/author/author-table/author-table.component';
+import { AuthorTableComponent } from './form/author/author-table/author-table.component';
 import { EditAuthorComponent } from './form/author/edit-author/edit-author.component';
 import { DeleteAuthorComponent } from './form/author/delete-author/delete-author.component';
 import { MessageComponent, MessageDialog } from './form/message/message.component';
+import { BookTableComponent } from './form/book/book-table/book-table.component';
+import { DeleteBookComponent } from './form/book/delete-book/delete-book.component';
+import { EditBookComponent } from './form/book/edit-book/edit-book.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AuthorComponent,
+    AuthorTableComponent,
     EditAuthorComponent,
     DeleteAuthorComponent,
     MessageComponent,
-    MessageDialog
+    MessageDialog,
+    BookTableComponent,
+    DeleteBookComponent,
+    EditBookComponent
   ],
   imports: [
     BrowserModule,
@@ -51,7 +58,8 @@ import { MessageComponent, MessageDialog } from './form/message/message.componen
     MatPaginatorModule,
     MatSortModule,
     MatDialogModule,
-    MatCardModule
+    MatCardModule,
+    MatSelectModule
   ],
   providers: [],
   bootstrap: [AppComponent]

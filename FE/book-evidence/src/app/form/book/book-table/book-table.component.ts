@@ -3,39 +3,45 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Subject } from 'rxjs/internal/Subject';
-import { AuthorService } from '../../../service/author.service';
+import { BookService } from '../../../service/book.service';
 import { EntityDataSource } from '../../../model/entity-datasource';
-import { Author } from '../../../model/author';
-import { EditAuthorComponent } from '../edit-author/edit-author.component';
+import { Book } from '../../../model/book';
+import { EditBookComponent } from '../edit-book/edit-book.component';
 import { MatDialog } from '@angular/material/dialog';
-import { DeleteAuthorComponent } from '../delete-author/delete-author.component';
+import { DeleteBookComponent } from '../delete-book/delete-book.component';
 import { MessageService } from 'src/app/service/message.service';
 import { MessageButtonGroup, MessageType } from 'src/app/model/message';
+import { Author } from 'src/app/model/author';
+import { AuthorService } from 'src/app/service/author.service';
 
 @Component({
-  selector: 'app-author-table',
-  templateUrl: './author-table.component.html',
-  styleUrls: ['./author-table.component.scss']
+  selector: 'app-book-table',
+  templateUrl: './book-table.component.html',
+  styleUrls: ['./book-table.component.scss']
 })
-export class AuthorTableComponent implements OnInit, AfterViewInit {
+export class BookTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<Author>;
-  dataSource: EntityDataSource<Author>;
+  @ViewChild(MatTable) table!: MatTable<Book>;
+  dataSource: EntityDataSource<Book>;
   searchText: string = '';
   searchSubject$ = new Subject<string>();
+  allAuthors: Author[] = [];
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['id', 'firstname', 'lastname', 'action'];
+  displayedColumns = ['id', 'author', 'title', 'releaseYear', 'description', 'action'];
 
   /**
    * Constructor.
-   * @param dialog        MatDialog.
-   * @param authorService author service.
+   * @param dialog         MatDialog.
+   * @param authorService  author service.
+   * @param bookService    book service.
+   * @param messageService mesage service.
    */
   constructor(
     public dialog: MatDialog,
     private authorService: AuthorService,
+    private bookService: BookService,
     private messageService: MessageService
   ) {
     // init empty datasource
@@ -48,6 +54,9 @@ export class AuthorTableComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // load data from API
     this.authorService.getAllAuthors().subscribe({
+      next: (authors) => this.allAuthors = authors.sort((a,b) => a.fullname.localeCompare(b.fullname)),
+    });
+    this.bookService.getAllBooks().subscribe({
       next: data => {
         // redefine the datasource
         this.dataSource = new EntityDataSource(data, this.searchSubject$);
@@ -73,25 +82,28 @@ export class AuthorTableComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Adds a new author.
+   * Adds a new book.
    */
-  addNewAuthor(): void {
-    const newAuthor = new Author(undefined, '', '');
-    const dialogRef = this.dialog.open(EditAuthorComponent, {
-      data: {author: newAuthor}
+  addNewBook(): void {
+    const newBook = new Book(undefined, undefined, '', undefined, '');
+    const dialogRef = this.dialog.open(EditBookComponent, {
+      data: {
+        book: newBook,
+        allAuthors: this.allAuthors
+      }
     });
     dialogRef.afterClosed().subscribe({
-      next: (author) => {
-        if (author) {
+      next: (book) => {
+        if (book) {
           // add a new author
-         this.authorService.saveAuthor(author).subscribe({
-            next: (savedAuthor) => {
-              console.info('savedAuthor=', savedAuthor);
-              this.dataSource.data.push(savedAuthor);
+         this.bookService.saveBook(book).subscribe({
+            next: (savedBook) => {
+              console.info('savedBook=', savedBook);
+              this.dataSource.data.push(savedBook);
               // show confirmation message
               this.messageService.addMessage({
                 type: MessageType.INFO,
-                text: 'Author has been saved.',
+                text: 'Book has been saved.',
                 buttonGroup: MessageButtonGroup.OK,
                 afterClose: (clickedButton) => {
                   // do nothing
@@ -106,24 +118,24 @@ export class AuthorTableComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Edits given author.
-   * @param author author to be edited.
+   * Edits given book.
+   * @param book book to be edited.
    */
-  editAuthor(author: Author): void {
-    const dialogRef = this.dialog.open(EditAuthorComponent, {
-      data: {author: author}
+  editBook(book: Book): void {
+    const dialogRef = this.dialog.open(EditBookComponent, {
+      data: {book: book}
     });
     dialogRef.afterClosed().subscribe({
-      next: (author) => {
-        if (author) {
+      next: (book) => {
+        if (book) {
           // update author
-         this.authorService.saveAuthor(author).subscribe({
-            next: (savedAuthor) => {
-              console.info('savedAuthor=', savedAuthor);
+         this.bookService.saveBook(book).subscribe({
+            next: (savedBook) => {
+              console.info('savedBook=', savedBook);
               // show confirmation message
               this.messageService.addMessage({
                 type: MessageType.INFO,
-                text: 'Author has been saved.',
+                text: 'Book has been saved.',
                 buttonGroup: MessageButtonGroup.OK,
                 afterClose: (clickedButton) => {
                   // do nothing
@@ -138,27 +150,27 @@ export class AuthorTableComponent implements OnInit, AfterViewInit {
   }
 
   /**
-   * Deletes given author.
-   * @param author author to be deleted.
+   * Deletes given book.
+   * @param book book to be deleted.
    */
-  deleteAuthor(author: Author): void {
-    const dialogRef = this.dialog.open(DeleteAuthorComponent, {
-      data: {author: author}
+  deleteBook(book: Book): void {
+    const dialogRef = this.dialog.open(DeleteBookComponent, {
+      data: {book: book}
     });
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        if (result && author.id) {
-          // delete author
-         this.authorService.deleteAuthor(author.id).subscribe({
+        if (result && book.id) {
+          // delete book
+         this.bookService.deleteBook(book.id).subscribe({
             next: (result) => {
-              console.info('deletedAuthor=', result);
+              console.info('deletedBook=', result);
               if (result) {
-                const data = this.dataSource.data.filter((a) => a.id !== author.id);
+                const data = this.dataSource.data.filter((a) => a.id !== book.id);
                 this.dataSource.data = data;
                 // show confirmation message
                 this.messageService.addMessage({
                   type: MessageType.INFO,
-                  text: 'Author has been deleted.',
+                  text: 'Book has been deleted.',
                   buttonGroup: MessageButtonGroup.OK,
                   afterClose: (clickedButton) => {
                     // do nothing

@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthorComponent } from './form/author/author-table/author-table.component';
+import { AuthorTableComponent } from './form/author/author-table/author-table.component';
+import { BookTableComponent } from './form/book/book-table/book-table.component';
 
 const routes: Routes = [
-  {path: 'author', component: AuthorComponent}
+  {path: 'author', component: AuthorTableComponent},
+  {path: 'book', component: BookTableComponent},
 ];
 
 @NgModule({
