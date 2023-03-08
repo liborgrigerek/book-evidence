@@ -26,6 +26,7 @@ public class Book {
     @JoinColumn(name = "authorId")
     private Author author;
     private String title;
+    private Integer releaseYear;
     private String description;
 
     /**
@@ -38,16 +39,19 @@ public class Book {
      * @param author      author of a book.
      * @param title       title of a book.
      * @param description short description of a book.
+     * @param releaseYear year of release.
      */
-    public Book(Author author, String title, String description) {
+    public Book(Author author, String title, Integer releaseYear, String description) {
         this.author = author;
         this.title = title;
         this.description = description;
+        this.releaseYear = releaseYear;
     }
 
     @Override
     public String toString() {
-        return "Book [id=" + id + ", author=" + author + ", title=" + title + ", description=" + description + "]";
+        return "Book [id=" + id + ", author=" + author + ", title=" + title + ", releaseYear=" + releaseYear
+                + ", description=" + description + "]";
     }
 
     @Override
@@ -107,5 +111,13 @@ public class Book {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(Integer releaseYear) {
+        this.releaseYear = releaseYear;
     }
 }

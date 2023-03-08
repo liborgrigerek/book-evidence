@@ -69,9 +69,9 @@ public class AuthorController {
     public ResponseEntity<Author> getAuthorById(@RequestParam("id") Integer id) {
        log.debug("getAuthorById({}) started.", id);
        try {
-           Author authors = authorService.getAuthorById(id);
-           log.debug("authors={}", authors);
-           return ResponseEntity.ok(authors);
+           Author author = authorService.getAuthorById(id);
+           log.debug("author={}", author);
+           return ResponseEntity.ok(author);
        } catch (Exception ex) {
            log.error("getAuthorById({}) error: {}", id, ex.getMessage());
            throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, CommonUtil.getStackTraceFromException(ex));
@@ -98,7 +98,7 @@ public class AuthorController {
 
     /**
      * Deletes given author from the database.
-     * @param author author.
+     * @param authorId id of author.
      * @return true if successfully deleted.
      */
     @DeleteMapping(value="delete")

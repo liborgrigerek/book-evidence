@@ -13,6 +13,7 @@ public class CommonUtil {
     // list of endpoints URL
     public static final String APP_URL = "/app/";
     public static final String AUTHOR_URL = "/author/";
+    public static final String BOOK_URL = "/book/";
 
     /**
      * Returns stack trace from given exception as a string
