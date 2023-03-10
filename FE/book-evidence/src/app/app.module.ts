@@ -27,6 +27,9 @@ import { MessageComponent, MessageDialog } from './form/message/message.componen
 import { BookTableComponent } from './form/book/book-table/book-table.component';
 import { DeleteBookComponent } from './form/book/delete-book/delete-book.component';
 import { EditBookComponent } from './form/book/edit-book/edit-book.component';
+import { ReaderTableComponent } from './form/reader/reader-table/reader-table.component';
+import { DeleteReaderComponent } from './form/reader/delete-reader/delete-reader.component';
+import { EditReaderComponent } from './form/reader/edit-reader/edit-reader.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,10 @@ import { EditBookComponent } from './form/book/edit-book/edit-book.component';
     MessageDialog,
     BookTableComponent,
     DeleteBookComponent,
-    EditBookComponent
+    EditBookComponent,
+    ReaderTableComponent,
+    DeleteReaderComponent,
+    EditReaderComponent
   ],
   imports: [
     BrowserModule,
