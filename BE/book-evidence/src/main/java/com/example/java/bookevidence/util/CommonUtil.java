@@ -14,6 +14,7 @@ public class CommonUtil {
     public static final String APP_URL = "/app/";
     public static final String AUTHOR_URL = "/author/";
     public static final String BOOK_URL = "/book/";
+    public static final String READER_URL = "/reader/";
 
     /**
      * Returns stack trace from given exception as a string
