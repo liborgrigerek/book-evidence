@@ -65,7 +65,7 @@ public class ReaderController {
      * Returns reader by his id.
      * @return reader by his id.
      */
-    @GetMapping(value = "id")
+    @GetMapping(value = "findbyid")
     public ResponseEntity<Reader> getReaderById(@RequestParam("id") Integer id) {
        log.debug("getReaderById({}) started.", id);
        try {

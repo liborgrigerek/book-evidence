@@ -65,7 +65,7 @@ public class BookController {
      * Returns book by its id.
      * @return book by its id.
      */
-    @GetMapping(value = "id")
+    @GetMapping(value = "findbyid")
     public ResponseEntity<Book> getBookById(@RequestParam("id") Integer id) {
        log.debug("getBookById({}) started.", id);
        try {

@@ -86,7 +86,8 @@ public class RentedBook {
     @OneToOne
     @JoinColumn(name = "readerId", updatable = false, insertable = false)
     private Reader reader;
-    private LocalDate dueDate;
+    private LocalDate rentedWhen;
+    private LocalDate rentedUntil;
 
     /**
      * Default Constructor.
@@ -95,27 +96,29 @@ public class RentedBook {
 
     /**
      * Constructor.
-     * @param book    rented book.
-     * @param reader  reader who rented the book.
-     * @param dueDate due date when reader must return the book.
+     * @param book        rented book.
+     * @param reader      reader who rented the book.
+     * @param rentedWhen  when a reader rented a book
+     * @param rentedUntil due date when reader must return the book.
      */
-    public RentedBook(Book book, Reader reader, LocalDate dueDate) {
+    public RentedBook(Book book, Reader reader, LocalDate rentedWhen, LocalDate rentedUntil) {
         this.book = book;
         this.reader = reader;
-        this.dueDate = dueDate;
+        this.rentedWhen = rentedWhen;
+        this.rentedUntil = rentedUntil;
     }
 
     @Override
     public String toString() {
-        return "RentedBook [book=" + book + ", reader=" + reader + ", dueDate=" + dueDate + "]";
+        return "RentedBook [key=" + key + ", book=" + book + ", reader=" + reader + ", rentedWhen=" + rentedWhen
+                + ", rentedUntil=" + rentedUntil + "]";
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((book == null) ? 0 : book.hashCode());
-        result = prime * result + ((reader == null) ? 0 : reader.hashCode());
+        result = prime * result + ((key == null) ? 0 : key.hashCode());
         return result;
     }
 
@@ -128,18 +131,52 @@ public class RentedBook {
         if (getClass() != obj.getClass())
             return false;
         RentedBook other = (RentedBook) obj;
-        if (book == null) {
-            if (other.book != null)
+        if (key == null) {
+            if (other.key != null)
                 return false;
-        } else if (!book.equals(other.book))
-            return false;
-        if (reader == null) {
-            if (other.reader != null)
-                return false;
-        } else if (!reader.equals(other.reader))
+        } else if (!key.equals(other.key))
             return false;
         return true;
     }
-    
+
+    public RentedBook.Key getKey() {
+        return key;
+    }
+
+    public void setKey(RentedBook.Key key) {
+        this.key = key;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
+    }
+
+    public Reader getReader() {
+        return reader;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public LocalDate getRentedWhen() {
+        return rentedWhen;
+    }
+
+    public void setRentedWhen(LocalDate rentedWhen) {
+        this.rentedWhen = rentedWhen;
+    }
+
+    public LocalDate getRentedUntil() {
+        return rentedUntil;
+    }
+
+    public void setRentedUntil(LocalDate rentedUntil) {
+        this.rentedUntil = rentedUntil;
+    }
     
 }

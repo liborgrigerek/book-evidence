@@ -65,7 +65,7 @@ public class AuthorController {
      * Returns author by his id.
      * @return author by his id.
      */
-    @GetMapping(value = "id")
+    @GetMapping(value = "findbyid")
     public ResponseEntity<Author> getAuthorById(@RequestParam("id") Integer id) {
        log.debug("getAuthorById({}) started.", id);
        try {

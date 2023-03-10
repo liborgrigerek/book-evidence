@@ -69,3 +69,8 @@ INSERT INTO BOOK (AUTHOR_ID, TITLE, RELEASE_YEAR, DESCRIPTION) VALUES(4, 'Torka 
 INSERT INTO BOOK (AUTHOR_ID, TITLE, RELEASE_YEAR, DESCRIPTION) VALUES(4, 'Torka aldrig tarar utan handskar: Doden', 2013, 'Torka aldrig tarar utan handskar: Doden-Jonas Gardell-2013');
 INSERT INTO BOOK (AUTHOR_ID, TITLE, RELEASE_YEAR, DESCRIPTION) VALUES(2, 'Utan personligt ansvar', 2014, 'Utan personligt ansvar-Lena Andersson-2014');
 INSERT INTO BOOK (AUTHOR_ID, TITLE, RELEASE_YEAR, DESCRIPTION) VALUES(16, 'Twist', 2014, 'Twist-Klas Ostergren-2014');
+
+-- READER TABLE
+INSERT INTO READER (FIRSTNAME, LASTNAME, STREET, CITY, ZIP_CODE) VALUES ('Alois', 'Vomacka', 'Opletalova 1', 'Ostrava','123 45');
+INSERT INTO READER (FIRSTNAME, LASTNAME, STREET, CITY, ZIP_CODE) VALUES ('Frantisek', 'Novotny', 'Komentskeho 456/3', 'Bruntal','456 45');
+INSERT INTO READER (FIRSTNAME, LASTNAME, STREET, CITY, ZIP_CODE) VALUES ('Igor', 'Dostal', 'Rude armady 245', 'Brno','794 11');
