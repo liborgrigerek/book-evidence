@@ -18,10 +18,10 @@ export class Author implements Entity {
      * @param firstname author's firstname.
      * @param lastname  author's lastname.
      */
-    constructor(id: number | undefined, firstname: string, lastname: string) {
+    constructor(id: number | undefined, firstname: string | undefined, lastname: string | undefined) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
+        this.firstname = (firstname) ? firstname : '';
+        this.lastname = (lastname) ? lastname : '';
         this.fullname = this.firstname + ' ' + this.lastname;
     }
     
@@ -46,7 +46,10 @@ export class Author implements Entity {
      * @param keyword keyword used for filtering.
      */
     filterBy(keyword: string): boolean {
-        return (this.firstname + Util.FILTER_SEP + this.lastname).toLowerCase().includes(keyword.toLowerCase());
+        return [
+            this.firstname,
+            this.lastname
+        ].join(Util.FILTER_SEP).toLowerCase().includes(keyword.toLowerCase());
     }
 }
   

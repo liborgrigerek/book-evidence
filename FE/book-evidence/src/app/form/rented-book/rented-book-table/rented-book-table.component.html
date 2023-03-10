@@ -1,0 +1,66 @@
+<div class="mat-elevation-z8">
+
+    <form class="main-form">
+      <h2>List of Rented Books:</h2>
+      <div class="button-row">
+        <button mat-raised-button (click)="rentBook()" >Rent a new book</button>
+      </div>
+      <mat-form-field class="half-width">
+        <mat-label>Search in rented books...</mat-label>
+        <input matInput placeholder="Please enter a part of either reader's name or book title" [(ngModel)]="searchText" name="searchInput" (ngModelChange)="onSearchInputChange($event)">
+      </mat-form-field>  
+      <table mat-table class="full-width" matSort aria-label="Elements">
+        <!-- bookAuthor Column -->
+        <ng-container matColumnDef="bookAuthor">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Book Author</th>
+          <td mat-cell *matCellDef="let row">{{row.book.author.fullname}}</td>
+        </ng-container>
+    
+        <!-- bookTitle Column -->
+        <ng-container matColumnDef="bookTitle">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Book Title</th>
+          <td mat-cell *matCellDef="let row">{{row.book.title}}</td>
+        </ng-container>
+    
+        <!-- reader Column -->
+        <ng-container matColumnDef="reader">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Reader</th>
+          <td mat-cell *matCellDef="let row">{{row.reader.fullname}}</td>
+        </ng-container>
+    
+        <!-- rentedWhen Column -->
+        <ng-container matColumnDef="rentedWhen">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Rented When</th>
+          <td mat-cell *matCellDef="let row">{{row.rentedWhen}}</td>
+        </ng-container>
+    
+        <!-- rentedUntil Column -->
+        <ng-container matColumnDef="rentedUntil">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Rented Until</th>
+          <td mat-cell *matCellDef="let row">{{row.rentedUntil}}</td>
+        </ng-container>
+    
+        <!-- action Column -->
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Action</th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-raised-button (click)="editRentedBook(row)">Edit</button>
+            <button mat-raised-button (click)="deleteRentedBook(row)">Return</button>
+          </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    
+      <mat-paginator #paginator
+          [length]="dataSource.data.length"
+          [pageIndex]="0"
+          [pageSize]="10"
+          [pageSizeOptions]="[5, 10, 20]"
+          aria-label="Select page">
+      </mat-paginator>
+    
+    </form>
+  </div>
+  

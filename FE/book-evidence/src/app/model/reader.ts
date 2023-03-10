@@ -24,13 +24,13 @@ export class Reader implements Entity {
      * @param city      city.
      * @param zipCode   zip code.
      */
-    constructor(id: number | undefined, firstname: string, lastname: string, street: string, city: string, zipCode: string) {
+    constructor(id: number | undefined, firstname: string | undefined, lastname: string | undefined, street: string | undefined, city: string | undefined, zipCode: string | undefined) {
         this.id = id;
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.street = street;
-        this.city = city;
-        this.zipCode = zipCode;
+        this.firstname = (firstname) ? firstname : '';
+        this.lastname = (lastname) ? lastname : '';
+        this.street = (street) ? street : '';
+        this.city = (city) ? city : '';
+        this.zipCode = (zipCode) ? zipCode : '';
         this.fullname = this.firstname + ' ' + this.lastname;
     }
     
@@ -58,7 +58,13 @@ export class Reader implements Entity {
      * @param keyword keyword used for filtering.
      */
     filterBy(keyword: string): boolean {
-        return [this.firstname, this.lastname, this.street, this.city, this.zipCode].join(Util.FILTER_SEP).toLowerCase().includes(keyword.toLowerCase());
+        return [
+            this.firstname, 
+            this.lastname, 
+            this.street, 
+            this.city, 
+            this.zipCode
+        ].join(Util.FILTER_SEP).toLowerCase().includes(keyword.toLowerCase());
     }
 }
   

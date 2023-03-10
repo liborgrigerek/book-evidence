@@ -30,6 +30,9 @@ import { EditBookComponent } from './form/book/edit-book/edit-book.component';
 import { ReaderTableComponent } from './form/reader/reader-table/reader-table.component';
 import { DeleteReaderComponent } from './form/reader/delete-reader/delete-reader.component';
 import { EditReaderComponent } from './form/reader/edit-reader/edit-reader.component';
+import { RentedBookTableComponent } from './form/rented-book/rented-book-table/rented-book-table.component';
+import { DeleteRentedBookComponent } from './form/rented-book/delete-rented-book/delete-rented-book.component';
+import { EditRentedBookComponent } from './form/rented-book/edit-rented-book/edit-rented-book.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,10 @@ import { EditReaderComponent } from './form/reader/edit-reader/edit-reader.compo
     EditBookComponent,
     ReaderTableComponent,
     DeleteReaderComponent,
-    EditReaderComponent
+    EditReaderComponent,
+    RentedBookTableComponent,
+    DeleteRentedBookComponent,
+    EditRentedBookComponent
   ],
   imports: [
     BrowserModule,

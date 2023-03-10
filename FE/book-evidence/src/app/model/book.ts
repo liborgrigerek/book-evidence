@@ -13,6 +13,7 @@ export class Book implements Entity {
     title: string;
     releaseYear: number | undefined;
     description: string;
+    label: string;
 
     /**
      * Full Constructor.
@@ -22,12 +23,14 @@ export class Book implements Entity {
      * @param releaseYear year of release of book.
      * @param description book's description.
      */
-    constructor(id: number | undefined, author: Author | undefined, title: string, releaseYear: number | undefined, description: string) {
+    constructor(id: number | undefined, author: Author | undefined, title: string | undefined, releaseYear: number | undefined, description: string | undefined) {
         this.id = id;
         this.author = author;
-        this.title = title;
+        this.title = (title) ? title : '';
         this.releaseYear = releaseYear;
-        this.description = description;
+        this.description = (description) ? description : '';
+        // short description of a book.
+        this.label = this.title + ' (' + this.author?.fullname + ')'
     }
     
     /**
@@ -53,7 +56,10 @@ export class Book implements Entity {
      * @param keyword keyword used for filtering.
      */
     filterBy(keyword: string): boolean {
-        return (this.title + Util.FILTER_SEP + this.description).toLowerCase().includes(keyword.toLowerCase());
+        return [
+            this.title,
+            this.description
+        ].join(Util.FILTER_SEP).toLowerCase().includes(keyword.toLowerCase());
     }
 }
   
