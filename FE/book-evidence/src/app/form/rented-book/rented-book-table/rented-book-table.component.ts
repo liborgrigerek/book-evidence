@@ -3,9 +3,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { Subject } from 'rxjs/internal/Subject';
-import { RentedBookService } from '../../../service/rented-book.service';
 import { EntityDataSource } from '../../../model/entity-datasource';
-import { RentedBook } from '../../../model/rented-book';
 import { EditRentedBookComponent } from '../edit-rented-book/edit-rented-book.component';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteRentedBookComponent } from '../delete-rented-book/delete-rented-book.component';
@@ -24,8 +22,8 @@ import { ReaderService } from 'src/app/service/reader.service';
 export class RentedBookTableComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<RentedBook>;
-  dataSource: EntityDataSource<RentedBook>;
+  @ViewChild(MatTable) table!: MatTable<Book>;
+  dataSource: EntityDataSource<Book>;
   searchText: string = '';
   searchSubject$ = new Subject<string>();
   allBooks: Book[] = [];
@@ -39,13 +37,11 @@ export class RentedBookTableComponent implements OnInit, AfterViewInit {
    * @param dialog            MatDialog.
    * @param bookService       book service.
    * @param readerService     reader service.
-   * @param rentedBookService rented book service.
    */
   constructor(
     public dialog: MatDialog,
     private bookService: BookService,
     private readerService: ReaderService,
-    private rentedBookService: RentedBookService,
     private messageService: MessageService
   ) {
     // init empty datasource
@@ -57,19 +53,7 @@ export class RentedBookTableComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     // load data from API
-    this.bookService.getAllBooks().subscribe({
-      next: (books) => this.allBooks = books.sort((a,b) => a.label.localeCompare(b.label))
-    });
-    this.readerService.getAllReaders().subscribe({
-      next: (readers) => this.allReaders = readers.sort((a,b) => a.fullname.localeCompare(b.fullname))
-    })
-    this.rentedBookService.getAllRentedBooks().subscribe({
-      next: data => {
-        // redefine the datasource
-        this.dataSource = new EntityDataSource(data, this.searchSubject$);
-        this.refreshTable();
-      }
-    });
+    this.loadData(true, true, true);
   }
 
   /**
@@ -95,22 +79,24 @@ export class RentedBookTableComponent implements OnInit, AfterViewInit {
     const rentedWhen = new Date();
     const rentedUntil = new Date();
     rentedUntil.setMonth(rentedWhen.getMonth()+1); // 1 month by default
-    const newRentedBook = new RentedBook(undefined, undefined, rentedWhen, rentedUntil);
     const dialogRef = this.dialog.open(EditRentedBookComponent, {
       data: {
-        rentedBook: newRentedBook,
+        rentedBook : this.allBooks[0],
         allBooks: this.allBooks,
         allReaders: this.allReaders
       }
     });
     dialogRef.afterClosed().subscribe({
       next: (rentedBook) => {
+        rentedBook.rentedWhen = rentedWhen;
+        rentedBook.rentedUntil = rentedUntil;
         if (rentedBook) {
           // add a new rentedBook
-         this.rentedBookService.saveRentedBook(rentedBook).subscribe({
+          console.debug('rentedBook=', rentedBook);
+          this.bookService.saveBook(rentedBook).subscribe({
             next: (savedRentedBook) => {
-              console.info('savedRentedBook=', savedRentedBook);
-              this.dataSource.data.push(savedRentedBook);
+              console.debug('savedRentedBook=', savedRentedBook);
+              this.loadData(false, false, true);
               // show confirmation message
               this.messageService.addMessage({
                 type: MessageType.INFO,
@@ -132,15 +118,17 @@ export class RentedBookTableComponent implements OnInit, AfterViewInit {
    * Edits given rented book.
    * @param rentedBook rented book to be edited.
    */
-  editRentedBook(rentedBook: RentedBook): void {
+  editRentedBook(rentedBook: Book): void {
     const dialogRef = this.dialog.open(EditRentedBookComponent, {
-      data: {rentedBook: rentedBook}
+      data: {
+        rentedBook: rentedBook
+      }
     });
     dialogRef.afterClosed().subscribe({
       next: (rentedBook) => {
         if (rentedBook) {
           // update rented book
-         this.rentedBookService.saveRentedBook(rentedBook).subscribe({
+         this.bookService.saveBook(rentedBook).subscribe({
             next: (savedRentedBook) => {
               console.info('savedRentedBook=', savedRentedBook);
               // show confirmation message
@@ -164,20 +152,21 @@ export class RentedBookTableComponent implements OnInit, AfterViewInit {
    * Deletes given rented book.
    * @param rentedBook rented book to be deleted.
    */
-  deleteRentedBook(rentedBook: RentedBook): void {
+  deleteRentedBook(rentedBook: Book): void {
     const dialogRef = this.dialog.open(DeleteRentedBookComponent, {
       data: {rentedBook: rentedBook}
     });
     dialogRef.afterClosed().subscribe({
       next: (result) => {
-        if (result && rentedBook.book && rentedBook.reader && rentedBook.book.id && rentedBook.reader.id) {
-          // delete author
-         this.rentedBookService.deleteRentedBook(rentedBook.book.id, rentedBook.reader.id).subscribe({
+        if (result && rentedBook.reader && rentedBook.reader.id) {
+         rentedBook.reader = undefined;
+         rentedBook.rentedWhen = undefined;
+         rentedBook.rentedUntil = undefined;
+         this.bookService.saveBook(rentedBook).subscribe({
             next: (result) => {
               console.info('deletedRentedBook=', result);
               if (result) {
-                const data = this.dataSource.data.filter((a) => a.book?.id !== rentedBook.book?.id && a.reader?.id !== rentedBook.reader?.id);
-                this.dataSource.data = data;
+                this.loadData(false, false, true);
                 // show confirmation message
                 this.messageService.addMessage({
                   type: MessageType.INFO,
@@ -198,13 +187,35 @@ export class RentedBookTableComponent implements OnInit, AfterViewInit {
 
   // private methods
 
+  private loadData(reloadBooks: boolean, reloadReaders: boolean, reloadRentedBooks: boolean): void {
+    if (reloadBooks) {
+      this.bookService.getAllBooks().subscribe({
+        next: (books) => this.allBooks = books.sort((a,b) => a.label.localeCompare(b.label))
+      });  
+    }
+    if (reloadReaders) {
+      this.readerService.getAllReaders().subscribe({
+        next: (readers) => this.allReaders = readers.sort((a,b) => a.fullname.localeCompare(b.fullname))
+      })  
+    }
+    if (reloadRentedBooks) {
+      this.bookService.getAllRentedBooks().subscribe({
+        next: rentedBooks => {
+          // redefine the datasource
+          this.dataSource = new EntityDataSource(rentedBooks, this.searchSubject$);
+          this.refreshTable();
+        }
+      });  
+    }
+  }
+
   /**
    * Refreshes the table.
    */
   private refreshTable(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;  
+    this.table.dataSource = this.dataSource ? this.dataSource : [];
     this.dataSource.contentChanged.next(true);
   }
 }

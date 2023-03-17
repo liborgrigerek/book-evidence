@@ -29,7 +29,7 @@ export class BookTableComponent implements OnInit, AfterViewInit {
   allAuthors: Author[] = [];
 
   /** Columns displayed in the table. Columns IDs can be added, removed, or reordered. */
-  displayedColumns = ['id', 'author', 'title', 'releaseYear', 'description', 'action'];
+  displayedColumns = ['id', 'author', 'title', 'releaseYear', 'description', 'reader', 'action'];
 
   /**
    * Constructor.
@@ -57,9 +57,10 @@ export class BookTableComponent implements OnInit, AfterViewInit {
       next: (authors) => this.allAuthors = authors.sort((a,b) => a.fullname.localeCompare(b.fullname)),
     });
     this.bookService.getAllBooks().subscribe({
-      next: data => {
+      next: books => {
+        console.debug('books=', books);
         // redefine the datasource
-        this.dataSource = new EntityDataSource(data, this.searchSubject$);
+        this.dataSource = new EntityDataSource(books, this.searchSubject$);
         this.refreshTable();
       }
     });
@@ -85,7 +86,7 @@ export class BookTableComponent implements OnInit, AfterViewInit {
    * Adds a new book.
    */
   addNewBook(): void {
-    const newBook = new Book(undefined, undefined, '', undefined, '');
+    const newBook = new Book(undefined, '', undefined, '');
     const dialogRef = this.dialog.open(EditBookComponent, {
       data: {
         book: newBook,
@@ -185,6 +186,15 @@ export class BookTableComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Shows dialog with reader of given book.
+   * @param book book
+   */
+  showReader(book: Book) {
+    // TODO: implement @@@@
+    console.debug('book=', book); // TODO: remove @@@@
+  }
+
   // private methods
 
   /**
@@ -193,7 +203,7 @@ export class BookTableComponent implements OnInit, AfterViewInit {
   private refreshTable(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;  
+    this.table.dataSource = this.dataSource ? this.dataSource : [];
     this.dataSource.contentChanged.next(true);
   }
 }

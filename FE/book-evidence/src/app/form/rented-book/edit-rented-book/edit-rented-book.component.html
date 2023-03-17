@@ -6,7 +6,7 @@
     <mat-card-content>
         <mat-form-field class="full-width">
             <mat-label>Book</mat-label>
-            <mat-select [(ngModel)]="data.rentedBook.book">
+            <mat-select [(ngModel)]="data.rentedBook">
                 <mat-option *ngFor="let book of data.allBooks" [value]="book">
                   {{book.label}}
                 </mat-option>

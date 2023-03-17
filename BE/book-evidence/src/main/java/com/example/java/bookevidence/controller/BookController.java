@@ -62,6 +62,23 @@ public class BookController {
     }
 
     /**
+     * Returns all rented books.
+     * @return all rented books.
+     */
+    @GetMapping(value = "rentedbooks")
+    public ResponseEntity<List<Book>> getRentedBooks() {
+       log.debug("getRentedBooks() started.");
+       try {
+           List<Book> rentedBooks = bookService.getRentedBooks();
+           log.debug("rentedBooks={}", rentedBooks);
+           return ResponseEntity.ok(rentedBooks);
+       } catch (Exception ex) {
+           log.error("getRentedBooks() error: {}", ex.getMessage());
+           throw new ResourceException(HttpStatus.INTERNAL_SERVER_ERROR, CommonUtil.getStackTraceFromException(ex));
+       }
+    }
+
+    /**
      * Returns book by its id.
      * @return book by its id.
      */

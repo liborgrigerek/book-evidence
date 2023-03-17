@@ -1,5 +1,10 @@
 package com.example.java.bookevidence.model;
 
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -28,6 +33,12 @@ public class Book {
     private String title;
     private Integer releaseYear;
     private String description;
+    @JsonIgnoreProperties("rentedBooks") // to avoid circular refference in JSON serialization. More: https://stackoverflow.com/questions/16577907/hibernate-onetomany-relationship-causes-infinite-loop-or-empty-entries-in-json
+    @ManyToOne(optional = true)
+    @JoinColumn(name = "readerId")
+    private Reader reader;
+    private LocalDate rentedWhen;
+    private LocalDate rentedUntil;
 
     /**
      * Default constructor.
@@ -46,12 +57,16 @@ public class Book {
         this.title = title;
         this.description = description;
         this.releaseYear = releaseYear;
+        this.reader = null;
+        this.rentedWhen = null;
+        this.rentedUntil = null;
     }
 
     @Override
     public String toString() {
         return "Book [id=" + id + ", author=" + author + ", title=" + title + ", releaseYear=" + releaseYear
-                + ", description=" + description + "]";
+                + ", description=" + description + ", readerId=" + ((reader != null) ? reader.getId() : null) + ", rentedWhen=" + rentedWhen
+                + ", rentedUntil=" + rentedUntil + "]";
     }
 
     @Override
@@ -119,5 +134,29 @@ public class Book {
 
     public void setReleaseYear(Integer releaseYear) {
         this.releaseYear = releaseYear;
+    }
+
+    public Reader getReader() {
+        return reader;
+    }
+
+    public void setReader(Reader reader) {
+        this.reader = reader;
+    }
+
+    public LocalDate getRentedWhen() {
+        return rentedWhen;
+    }
+
+    public void setRentedWhen(LocalDate rentedWhen) {
+        this.rentedWhen = rentedWhen;
+    }
+
+    public LocalDate getRentedUntil() {
+        return rentedUntil;
+    }
+
+    public void setRentedUntil(LocalDate rentedUntil) {
+        this.rentedUntil = rentedUntil;
     }
 }

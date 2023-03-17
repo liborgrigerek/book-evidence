@@ -1,9 +1,15 @@
 package com.example.java.bookevidence.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 /**
@@ -24,6 +30,9 @@ public class Reader {
     private String street;
     private String city;
     private String zipCode;
+    @JsonIgnoreProperties("reader") // to avoid circular refference in JSON serialization. More: https://stackoverflow.com/questions/16577907/hibernate-onetomany-relationship-causes-infinite-loop-or-empty-entries-in-json
+    @OneToMany(mappedBy = "reader")
+    private List<Book> rentedBooks;
 
     /**
      * Default constructor.
@@ -51,7 +60,7 @@ public class Reader {
     @Override
     public String toString() {
         return "Reader [id=" + id + ", firstname=" + firstname + ", lastname=" + lastname + ", street=" + street
-                + ", city=" + city + ", zipCode=" + zipCode + "]";
+                + ", city=" + city + ", zipCode=" + zipCode + ", rentedBooks=" + rentedBooks + "]";
     }
 
     @Override
@@ -127,6 +136,14 @@ public class Reader {
 
     public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
+    }
+
+    public List<Book> getRentedBooks() {
+        return rentedBooks;
+    }
+
+    public void setRentedBooks(List<Book> rentedBooks) {
+        this.rentedBooks = rentedBooks;
     }
     
 }

@@ -1,5 +1,6 @@
 import { Author } from "./author";
 import { Entity } from "./entity";
+import { Reader } from "./reader";
 import { Util } from "./util";
 
 /**
@@ -13,24 +14,27 @@ export class Book implements Entity {
     title: string;
     releaseYear: number | undefined;
     description: string;
-    label: string;
+    reader: Reader | undefined;
+    rentedWhen: Date | undefined;
+    rentedUntil: Date | undefined;
 
     /**
      * Full Constructor.
      * @param id          book's id.
-     * @param author      book's author.
      * @param title       book's title.
      * @param releaseYear year of release of book.
      * @param description book's description.
      */
-    constructor(id: number | undefined, author: Author | undefined, title: string | undefined, releaseYear: number | undefined, description: string | undefined) {
+    constructor(id: number | undefined, title: string | undefined, releaseYear: number | undefined, description: string | undefined) {
         this.id = id;
-        this.author = author;
         this.title = (title) ? title : '';
         this.releaseYear = releaseYear;
         this.description = (description) ? description : '';
         // short description of a book.
-        this.label = this.title + ' (' + this.author?.fullname + ')'
+        this.author = undefined;
+        this.reader = undefined;
+        this.rentedWhen = undefined;
+        this.rentedUntil = undefined;
     }
     
     /**
@@ -49,6 +53,14 @@ export class Book implements Entity {
             case 'id': return Util.compare(this.id, other.id, isAsc);
             default: return 0;        
         }
+    }
+
+    /**
+     * Book label.
+     * @return book label.
+     */
+    get label() {
+        return this.title + ' (' + this.author?.fullname + ')';
     }
 
     /**

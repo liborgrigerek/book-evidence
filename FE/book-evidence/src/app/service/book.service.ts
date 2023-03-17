@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { Author } from '../model/author';
 import { Book } from '../model/book';
+import { Reader } from '../model/reader';
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +21,27 @@ export class BookService {
       map((books) => {
         // create Book objects from data from JSON deserializer (because Book is an instance of class, not interface. Otherwise no method is defined on Book instances.).
         const definedBooks: Book[] = [];
-        books.forEach(book => {
-          const author = (book.author) ? new Author(book.author.id, book.author.firstname, book.author.lastname) : undefined;
-          definedBooks.push(
-            new Book(book.id, author, book.title, book.releaseYear, book.description)
-          );
+        books.forEach(b => {
+          const book : Book = this.createBook(b);
+          definedBooks.push(book);
+        });
+        return definedBooks;
+      })
+    );
+  }
+
+  /**
+   * Returns all rented books.
+   * @returns all rented books.
+   */
+  getAllRentedBooks(): Observable<Book[]> {
+    return this.http.get<Book[]>('book/rentedbooks').pipe(
+      map((books) => {
+        // create Book objects from data from JSON deserializer (because Book is an instance of class, not interface. Otherwise no method is defined on Book instances.).
+        const definedBooks: Book[] = [];
+        books.forEach(b => {
+          const book : Book = this.createBook(b);
+          definedBooks.push(book);
         });
         return definedBooks;
       })
@@ -39,9 +56,9 @@ export class BookService {
   saveBook(book:Book): Observable<Book> {
     return this.http.post<Book>('book/save', book).pipe(
       map(
-        (book) => {
-          const author = (book.author) ? new Author(book.author.id, book.author.firstname, book.author.lastname) : undefined;
-          return new Book(book.id, author, book.title, book.releaseYear, book.description);
+        (b) => {
+          const book : Book = this.createBook(b);
+          return book;
         }
       )
     )
@@ -60,5 +77,14 @@ export class BookService {
         () => true
       )
     )
+  }
+
+  private createBook(b: Book): Book {
+    const book = new Book(b.id, b.title, b.releaseYear, b.description);
+    book.author = (b.author) ? new Author(b.author.id, b.author.firstname, b.author.lastname) : undefined;
+    book.reader = (b.reader) ? new Reader(b.reader.id, b.reader.firstname, b.reader.lastname, b.reader.street, b.reader.city, b.reader.zipCode) : undefined;
+    book.rentedWhen = (b.rentedWhen) ? new Date(b.rentedWhen) : undefined;
+    book.rentedUntil = (b.rentedWhen) ? new Date(b.rentedWhen) : undefined;
+    return book;
   }
 }

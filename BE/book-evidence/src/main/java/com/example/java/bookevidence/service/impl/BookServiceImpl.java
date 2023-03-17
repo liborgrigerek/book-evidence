@@ -34,12 +34,21 @@ public class BookServiceImpl implements BookService {
     }
 
     /**
-     * Returns all authors.
-     * @return all authors.
+     * Returns all books.
+     * @return all books.
      */
     @Override
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
+    }
+
+    /**
+     * Returns rented books.
+     * @return rented books.
+     */
+    @Override
+    public List<Book> getRentedBooks() {
+        return bookRepository.findRentedBooks();
     }
 
     /**

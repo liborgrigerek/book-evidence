@@ -181,7 +181,7 @@ export class ReaderTableComponent implements OnInit, AfterViewInit {
   private refreshTable(): void {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.table.dataSource = this.dataSource;  
+    this.table.dataSource = this.dataSource ? this.dataSource : [];
     this.dataSource.contentChanged.next(true);
   }
 }

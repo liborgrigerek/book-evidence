@@ -13,6 +13,7 @@ import com.example.java.bookevidence.model.Book;
 
 public interface BookService {
     List<Book> getAllBooks();
+    List<Book> getRentedBooks();
     Book getBookById(Integer id);
     Book saveBook(Book book);
     void deleteBookById(Integer bookId);
